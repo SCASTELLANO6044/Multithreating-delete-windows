@@ -1,19 +1,37 @@
-function Delete-FilesParallel {
+$maxThreads = 50
+$filesPerThread = 20
+
+function Delete-Files {
     param(
         [string]$Path
     )
 
-    Get-ChildItem $Path -File | ForEach-Object {
-        Start-Job {
-            Remove-Item $_.FullName
+    $files = Get-ChildItem $Path -File
+    $fileCount = $files.Count
+
+    $threads = [System.Collections.ArrayList]@()
+
+    for ($i = 0; $i -lt $fileCount; $i += $filesPerThread) {
+        $thread = [System.Threading.Thread]::new(
+            [System.Threading.ThreadStart]::new({
+                for ($j = $i; $j -lt $i + $filesPerThread -and $j -lt $fileCount; $j++) {
+                    Remove-Item $files[$j].FullName
+                }
+            })
+        )
+        $thread.Start()
+        $threads.Add($thread)
+
+        while ($threads.Count -ge $maxThreads) {
+            [System.Threading.Thread]::Sleep(100)
+            $threads.RemoveAll({ $_.IsAlive -eq $false })
         }
     }
 
-    while (Get-Job | Where-Object { $_.State -eq 'Running' }) {
-        Start-Sleep -Seconds 1
+    while ($threads.Count -gt 0) {
+        [System.Threading.Thread]::Sleep(100)
+        $threads.RemoveAll({ $_.IsAlive -eq $false })
     }
-
-    Get-Job | Remove-Job
 }
 
-Delete-FilesParallel -Path "D:\Coding\Github projects\Multithreating-delete-windows\example files"
+Delete-Files -Path "C:\path\to\folder"
