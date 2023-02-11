@@ -19,3 +19,5 @@ Ejecuta el siguiente comando para ejecutar el script y eliminar el contenido de 
 .\delete-files.ps1 -Path "C:\path\to\folder"
 
 Reemplaza C:\path\to\folder con la ruta completa a la carpeta que deseas eliminar. El script comenzará a ejecutarse y eliminará el contenido de la carpeta de manera paralela, utilizando múltiples hilos. Una vez que se hayan eliminado todos los archivos, el script finalizará.
+
+Para poder probar el funcionamiento paralelamente se ha creado otro script (create-empty-files.ps1) que creará 1000 archivos vacíos en una carpeta determinada.
