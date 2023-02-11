@@ -8,4 +8,4 @@ function Create-Files {
     }
 }
 
-Create-Files -Path "D:\Coding\Github projects\Multithreating-delete-windows\example files"
+Create-Files -Path "D:\Coding\Github projects\Multithreating-delete-windows\exampleFiles"

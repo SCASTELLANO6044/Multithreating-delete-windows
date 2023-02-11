@@ -34,4 +34,4 @@ function Delete-Files {
     }
 }
 
-Delete-Files -Path "C:\path\to\folder"
+Delete-Files -Path "D:\Coding\Github projects\Multithreating-delete-windows\exampleFiles"
