@@ -16,4 +16,4 @@ function Delete-FilesParallel {
     Get-Job | Remove-Job
 }
 
-Delete-FilesParallel -Path "C:\path\to\folder"
+Delete-FilesParallel -Path "D:\Coding\Github projects\Multithreating-delete-windows\example files"
