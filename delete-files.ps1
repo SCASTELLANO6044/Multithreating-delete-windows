@@ -1,37 +1,20 @@
-$maxThreads = 50
-$filesPerThread = 20
+$Path = "D:\Coding\Github projects\Multithreating-delete-windows\exampleFiles"
 
-function Delete-Files {
-    param(
-        [string]$Path
-    )
+$files = Get-ChildItem $Path -File | Select-Object -First 1000
 
-    $files = Get-ChildItem $Path -File
-    $fileCount = $files.Count
+$threads = @()
 
-    $threads = [System.Collections.ArrayList]@()
-
-    for ($i = 0; $i -lt $fileCount; $i += $filesPerThread) {
-        $thread = [System.Threading.Thread]::new(
-            [System.Threading.ThreadStart]::new({
-                for ($j = $i; $j -lt $i + $filesPerThread -and $j -lt $fileCount; $j++) {
-                    Remove-Item $files[$j].FullName
-                }
-            })
-        )
-        $thread.Start()
-        $threads.Add($thread)
-
-        while ($threads.Count -ge $maxThreads) {
-            [System.Threading.Thread]::Sleep(100)
-            $threads.RemoveAll({ $_.IsAlive -eq $false })
+foreach ($file in $files) {
+    $thread = New-Object System.Threading.Thread(`
+        [System.Threading.ThreadStart]`
+        {
+            Remove-Item $file.FullName
         }
-    }
-
-    while ($threads.Count -gt 0) {
-        [System.Threading.Thread]::Sleep(100)
-        $threads.RemoveAll({ $_.IsAlive -eq $false })
-    }
+    )
+    $threads += $thread
+    $thread.Start()
 }
 
-Delete-Files -Path "D:\Coding\Github projects\Multithreating-delete-windows\exampleFiles"
+foreach ($thread in $threads) {
+    $thread.Join()
+}
