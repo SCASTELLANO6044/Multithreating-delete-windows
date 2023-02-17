@@ -18,3 +18,5 @@ foreach ($file in $files) {
 foreach ($thread in $threads) {
     $thread.Join()
 }
+
+# If not working well contact me
